@@ -6,11 +6,13 @@ import (
     "net/http"
     "github.com/gorilla/mux"
     // "gopkg.in/mgo.v2"
+    "fmt"
 )
 
 func main() {
     router := mux.NewRouter()
     router.HandleFunc("/test", TestRouting).Methods("GET")
+    fmt.Println("Server started")
     log.Fatal(http.ListenAndServe(":8000", router))
 }
 
