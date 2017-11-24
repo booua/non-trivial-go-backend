@@ -24,6 +24,11 @@ func TestRouting(w http.ResponseWriter, r *http.Request) {
     json.NewEncoder(w).Encode(testArray)
 }
 
+func allowOrigin(w http.ResponseWriter) {
+
+  w.Header().Set("Access-Control-Allow-Origin", "*")
+}
+
 func opinions(w http.ResponseWriter, r *http.Request) {
 
   type opinion struct {
@@ -39,6 +44,6 @@ func opinions(w http.ResponseWriter, r *http.Request) {
     {"Grafik", "Kto projektował tę stronę? Ja pierdziu, nie mogę na to patrzeć.", 0},
   }
 
-  w.Header().Set("Access-Control-Allow-Origin", "*")
+  allowOrigin(w)
   json.NewEncoder(w).Encode(opinionsList)
 }
