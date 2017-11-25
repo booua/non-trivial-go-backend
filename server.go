@@ -15,6 +15,7 @@ func main() {
 	// OPINIONS
 	var oc = controllers.NewOpinionController()
 
+	r.GET("/opinions", oc.GetAllOpinions)
 	r.GET("/opinions/:id", oc.GetOpinion)
 	r.POST("/opinions", oc.AddOpinion)
 	r.DELETE("/opinions/:id", oc.DeleteOpinion)

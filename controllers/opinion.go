@@ -39,6 +39,26 @@ func (c OpinionController) AddOpinion(w http.ResponseWriter, r *http.Request, p 
 	fmt.Fprintf(w, "%s", uj)
 }
 
+
+func (c OpinionController) GetAllOpinions(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+
+	o := []models.Opinion{}
+
+	if err := c.opinions.Find(nil).All(&o); err != nil {
+		w.WriteHeader(404)
+		return
+	}
+
+	// Marshal provided interface into JSON structure
+	j, _ := json.Marshal(o)
+
+	// Write content-type, statuscode, payload
+	allowOrigin(w)
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	fmt.Fprintf(w, "%s", j)
+}
+
 func (c OpinionController) GetOpinion(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	err, id := getId(p)
 	if err != nil {
