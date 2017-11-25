@@ -1,8 +1,12 @@
 package controllers
 
-import "gopkg.in/mgo.v2"
+import (
+	"gopkg.in/mgo.v2"
+	"non-trivial-go-backend/conf"
+)
 
-var url = "mongodb://localhost"
+var url = conf.DB.Url
+var dbName = conf.DB.DbName
 
 func session() *mgo.Session {
 	// Connect to local mongo instance

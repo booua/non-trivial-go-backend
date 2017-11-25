@@ -10,7 +10,7 @@ import (
 	"non-trivial-go-backend/models"
 )
 
-const collectionName = "opinions"
+const opinionCName = "opinions"
 
 type OpinionController struct {
 	opinions *mgo.Collection
@@ -18,7 +18,7 @@ type OpinionController struct {
 
 func NewOpinionController() *OpinionController {
 	return &OpinionController{
-		db("lbpl").C(collectionName),
+		db(dbName).C(opinionCName),
 	}
 }
 
