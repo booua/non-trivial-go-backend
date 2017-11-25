@@ -15,9 +15,9 @@ func main() {
 	// OPINIONS
 	var oc = controllers.NewOpinionController()
 
-	r.GET("/opinion/:id", oc.GetOpinion)
-	r.POST("/opinion", oc.AddOpinion)
-	r.DELETE("/opinion/:id", oc.DeleteOpinion)
+	r.GET("/opinions/:id", oc.GetOpinion)
+	r.POST("/opinions", oc.AddOpinion)
+	r.DELETE("/opinions/:id", oc.DeleteOpinion)
 
 	serve(r, conf.Server.Port)
 }
