@@ -12,8 +12,12 @@ import (
 func main() {
 	r := httprouter.New()
 
-	// OPINIONS
 	var oc = controllers.NewOpinionController()
+	var canvasDataController = controllers.NewCanvasDataController()
+
+	r.GET("/canvas_data/:id", canvasDataController.GetCanvasDataById)
+	r.POST("/canvas_data", canvasDataController.AddCanvasData)
+	r.DELETE("/canvas_data/:id", canvasDataController.DeleteCanvasData)
 
 	r.GET("/opinions", oc.GetAllOpinions)
 	r.GET("/opinions/:id", oc.GetOpinion)
