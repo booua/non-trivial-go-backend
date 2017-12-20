@@ -1,7 +1,3 @@
-// GetCanvasDataById
-// AddCanvasData
-// DeleteCanvasData
-
 package controllers
 
 import (
