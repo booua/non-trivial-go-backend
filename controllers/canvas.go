@@ -1,3 +1,7 @@
+// AddCanvas
+// GetCanvasById
+// DeleteCanvas
+
 package controllers
 
 import (
@@ -10,21 +14,21 @@ import (
 	"non-trivial-go-backend/models"
 )
 
-const canvasDataCollectionName = "canvasData"
+const canvasCollectionName = "canvasData"
 
-type CanvasDataController struct {
+type CanvasController struct {
 	canvasData *mgo.Collection
 }
 
-func NewCanvasDataController() *CanvasDataController {
-	return &CanvasDataController{
-		db(dbName).C(canvasDataCollectionName),
+func NewCanvasController() *CanvasController {
+	return &CanvasController{
+		db(dbName).C(canvasCollectionName),
 	}
 }
 
-func (c CanvasDataController) AddCanvasData(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+func (c CanvasController) AddCanvas(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 
-	o := models.CanvasData{}
+	o := models.Canvas{}
 	parseRequest(r, &o)
 	o.Id = bson.NewObjectId()
 
@@ -38,9 +42,7 @@ func (c CanvasDataController) AddCanvasData(w http.ResponseWriter, r *http.Reque
 	fmt.Fprintf(w, "%s", uj)
 }
 
-
-
-func (c CanvasDataController) GetCanvasDataById(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+func (c CanvasController) GetCanvasById(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	err, id := getId(p)
 	if err != nil {
 		w.WriteHeader(404)
@@ -49,7 +51,7 @@ func (c CanvasDataController) GetCanvasDataById(w http.ResponseWriter, r *http.R
 
 	o := models.CanvasData{}
 
-	if err := c.canvasData.FindId(id).One(&o); err != nil {
+	if err := c.canvas.FindId(id).One(&o); err != nil {
 		w.WriteHeader(404)
 		return
 	}
@@ -62,14 +64,14 @@ func (c CanvasDataController) GetCanvasDataById(w http.ResponseWriter, r *http.R
 	fmt.Fprintf(w, "%s", j)
 }
 
-func (c CanvasDataController) DeleteCanvasData(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+func (c CanvasController) DeleteCanvas(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	err, id := getId(p)
 	if err != nil {
 		w.WriteHeader(404)
 		return
 	}
 
-	if err := c.canvasData.RemoveId(id); err != nil {
+	if err := c.canvas.RemoveId(id); err != nil {
 		w.WriteHeader(404)
 		return
 	}
