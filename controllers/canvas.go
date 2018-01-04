@@ -17,7 +17,7 @@ import (
 const canvasCollectionName = "canvasData"
 
 type CanvasController struct {
-	canvasData *mgo.Collection
+	canvas *mgo.Collection
 }
 
 func NewCanvasController() *CanvasController {
@@ -32,7 +32,7 @@ func (c CanvasController) AddCanvas(w http.ResponseWriter, r *http.Request, p ht
 	parseRequest(r, &o)
 	o.Id = bson.NewObjectId()
 
-	c.canvasData.Insert(o)
+	c.canvas.Insert(o)
 
 	uj, _ := json.Marshal(o)
 
@@ -49,7 +49,7 @@ func (c CanvasController) GetCanvasById(w http.ResponseWriter, r *http.Request, 
 		return
 	}
 
-	o := models.CanvasData{}
+	o := models.Canvas{}
 
 	if err := c.canvas.FindId(id).One(&o); err != nil {
 		w.WriteHeader(404)
