@@ -17,11 +17,17 @@ func main() {
 	r.POST("/canvas", canvasController.AddCanvas)
 	r.DELETE("/canvas/:id", canvasController.DeleteCanvas)
 
-	var oc = controllers.NewOpinionController()
-	r.GET("/opinions", oc.GetAllOpinions)
-	r.GET("/opinions/:id", oc.GetOpinion)
-	r.POST("/opinions", oc.AddOpinion)
-	r.DELETE("/opinions/:id", oc.DeleteOpinion)
+	var opinionController = controllers.NewOpinionController()
+	r.GET("/opinions", opinionController.GetAllOpinions)
+	r.GET("/opinions/:id", opinionController.GetOpinion)
+	r.POST("/opinions", opinionController.AddOpinion)
+	r.DELETE("/opinions/:id", opinionController.DeleteOpinion)
+
+	var userController = controllers.NewUserController()
+	r.GET("/users", userController.GetAllUsers)
+	r.GET("/users/:id", userController.GetUserById)
+	r.POST("/users", userController.AddUser)
+	r.DELETE("/users/:id", userController.DeleteUser)
 
 	serve(r, conf.Server.Port)
 }
