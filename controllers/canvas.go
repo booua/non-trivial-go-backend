@@ -27,9 +27,11 @@ func NewCanvasController() *CanvasController {
 }
 
 func (c CanvasController) AddCanvas(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
-
 	o := models.Canvas{}
-	parseRequest(r, &o)
+	if err := parseRequest(r, &o); err != nil {
+		http.Error(w, parseRequest(r, &o).Error(), http.StatusInternalServerError)
+		return
+	}
 	o.Id = bson.NewObjectId()
 
 	c.canvas.Insert(o)
@@ -45,14 +47,14 @@ func (c CanvasController) AddCanvas(w http.ResponseWriter, r *http.Request, p ht
 func (c CanvasController) GetCanvasById(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	err, id := getId(p)
 	if err != nil {
-		w.WriteHeader(404)
+		http.Error(w, err.Error(), http.StatusNotFound)
 		return
 	}
 
 	o := models.Canvas{}
 
 	if err := c.canvas.FindId(id).One(&o); err != nil {
-		w.WriteHeader(404)
+		http.Error(w, err.Error(), http.StatusNotFound)
 		return
 	}
 
@@ -67,12 +69,12 @@ func (c CanvasController) GetCanvasById(w http.ResponseWriter, r *http.Request, 
 func (c CanvasController) DeleteCanvas(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	err, id := getId(p)
 	if err != nil {
-		w.WriteHeader(404)
+		http.Error(w, err.Error(), http.StatusNotFound)
 		return
 	}
 
 	if err := c.canvas.RemoveId(id); err != nil {
-		w.WriteHeader(404)
+		http.Error(w, err.Error(), http.StatusNotFound)
 		return
 	}
 

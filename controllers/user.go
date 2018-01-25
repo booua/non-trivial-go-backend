@@ -1,3 +1,8 @@
+// AddUser
+// GetAllUsers
+// GetUserById
+// DeleteUser
+
 package controllers
 
 import (
@@ -10,27 +15,27 @@ import (
 	"non-trivial-go-backend/models"
 )
 
-const opinionCName = "opinions"
+const userCollection = "users"
 
-type OpinionController struct {
-	opinions *mgo.Collection
+type UserController struct {
+	users *mgo.Collection
 }
 
-func NewOpinionController() *OpinionController {
-	return &OpinionController{
-		db(dbName).C(opinionCName),
+func NewUserController() *UserController {
+	return &UserController{
+		db(dbName).C(userCollection),
 	}
 }
 
-func (c OpinionController) AddOpinion(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
-	o := models.Opinion{}
+func (c UserController) AddUser(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+	o := models.User{}
 	if err := parseRequest(r, &o); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	o.Id = bson.NewObjectId()
 
-	c.opinions.Insert(o)
+	c.users.Insert(o)
 
 	// Marshal provided interface into JSON structure
 	uj, _ := json.Marshal(o)
@@ -42,12 +47,11 @@ func (c OpinionController) AddOpinion(w http.ResponseWriter, r *http.Request, p 
 	fmt.Fprintf(w, "%s", uj)
 }
 
-func (c OpinionController) GetAllOpinions(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+func (c UserController) GetAllUsers(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+	o := []models.User{}
 
-	o := []models.Opinion{}
-
-	if err := c.opinions.Find(nil).All(&o); err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+	if err := c.users.Find(nil).All(&o); err != nil {
+		http.Error(w, err.Error(), http.StatusNotFound)
 		return
 	}
 
@@ -61,17 +65,17 @@ func (c OpinionController) GetAllOpinions(w http.ResponseWriter, r *http.Request
 	fmt.Fprintf(w, "%s", j)
 }
 
-func (c OpinionController) GetOpinion(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+func (c UserController) GetUserById(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	err, id := getId(p)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, err.Error(), http.StatusNotFound)
 		return
 	}
 
-	o := models.Opinion{}
+	o := models.User{}
 
-	if err := c.opinions.FindId(id).One(&o); err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+	if err := c.users.FindId(id).One(&o); err != nil {
+		http.Error(w, err.Error(), http.StatusNotFound)
 		return
 	}
 
@@ -85,15 +89,15 @@ func (c OpinionController) GetOpinion(w http.ResponseWriter, r *http.Request, p 
 	fmt.Fprintf(w, "%s", j)
 }
 
-func (c OpinionController) DeleteOpinion(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+func (c UserController) DeleteUser(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	err, id := getId(p)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, err.Error(), http.StatusNotFound)
 		return
 	}
 
-	if err := c.opinions.RemoveId(id); err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+	if err := c.users.RemoveId(id); err != nil {
+		http.Error(w, err.Error(), http.StatusNotFound)
 		return
 	}
 
