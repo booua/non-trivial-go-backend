@@ -24,7 +24,10 @@ func NewOpinionController() *OpinionController {
 
 func (c OpinionController) AddOpinion(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	o := models.Opinion{}
-	parseRequest(r, &o)
+	if err := parseRequest(r, &o); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 	o.Id = bson.NewObjectId()
 
 	c.opinions.Insert(o)
@@ -39,13 +42,12 @@ func (c OpinionController) AddOpinion(w http.ResponseWriter, r *http.Request, p 
 	fmt.Fprintf(w, "%s", uj)
 }
 
-
 func (c OpinionController) GetAllOpinions(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 
 	o := []models.Opinion{}
 
 	if err := c.opinions.Find(nil).All(&o); err != nil {
-		w.WriteHeader(404)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
@@ -62,14 +64,14 @@ func (c OpinionController) GetAllOpinions(w http.ResponseWriter, r *http.Request
 func (c OpinionController) GetOpinion(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	err, id := getId(p)
 	if err != nil {
-		w.WriteHeader(404)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	o := models.Opinion{}
 
 	if err := c.opinions.FindId(id).One(&o); err != nil {
-		w.WriteHeader(404)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
@@ -86,12 +88,12 @@ func (c OpinionController) GetOpinion(w http.ResponseWriter, r *http.Request, p 
 func (c OpinionController) DeleteOpinion(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	err, id := getId(p)
 	if err != nil {
-		w.WriteHeader(404)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	if err := c.opinions.RemoveId(id); err != nil {
-		w.WriteHeader(404)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
